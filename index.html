@@ -1,0 +1,102 @@
+<html>
+<head>
+	<style>
+		#result,#inData,input[type="button"] {
+			text-align: center;
+			width: 100%;
+			height: 100;
+			font-size: 24pt;
+		}
+		
+		#inData,input[type="button"] {
+			height: 50;
+			font-size: 200%
+		}
+		
+		table {
+			border-collapse: collapse;
+		}
+		
+		TD, TH {
+			padding: 0px;
+			margin: 0px;
+		}
+		
+	</style>
+</head>
+<script>
+	function start(){
+		var originalText = document.getElementById("inData").value;
+		var listText = originalText.replace(/\s+/g, '').split('');
+		
+		console.log(listText);
+		
+		listText = shuffle(listText);
+		
+		console.log(listText.join(' '));
+		var table = document.getElementById('result');
+		if(document.getElementById('result') != null){
+			table.remove();
+		}
+		table = document.createElement('table');
+		table.innerHtml = '';
+		
+		table.id = "result";
+		var row = document.createElement('tr');
+		var row2 = row.cloneNode();
+		
+		for(var ch in listText){
+			var cell = document.createElement('td');
+			cell.innerText = listText[ch];
+			row.append(cell)
+		}
+		table.append(row);
+		
+		var result = [];
+		var findIndex = [];
+		
+		for(var ch in originalText){
+			if(originalText[ch].trim().length == 0) continue;
+			var index = getIndex(listText,originalText[ch],findIndex);
+			result.push(index);
+		}
+		
+		for(var res in result){
+			result[res] += 1;
+			var cell = document.createElement('td');
+			cell.innerText = result[res];
+			row2.append(cell);
+		}
+		table.append(row2);
+		
+		console.log(result.join(' '));
+		document.getElementsByTagName("body")[0].append(table);
+	}
+	
+	
+	function shuffle(a) {
+		for (let i = a.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[a[i], a[j]] = [a[j], a[i]];
+		}
+		return a;
+	}
+	
+	function getIndex(listChar, find,findIndex,nextIndex = 0){
+		var index = listChar.indexOf(find,nextIndex);
+		console.log(index + ":" + find);
+		if(findIndex.indexOf(index) >= 0){
+			return getIndex(listChar,find,findIndex,nextIndex + 1);
+		}
+		
+		findIndex.push(index);
+		
+		return index;
+	}
+</script>
+
+<body>
+	<input type ="text" id="inData"><br>
+	<input type="button" onclick="start()" value="Переставить">
+</body>
+</html>
